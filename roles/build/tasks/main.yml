@@ -1,0 +1,21 @@
+---
+- name: install build-essential
+  package: name=build-essential state=latest
+
+- name: install autoconf
+  package: name=autoconf state=latest
+
+- name: install libtool
+  package: name=libtool state=latest
+
+- name: install pkg-config
+  package: name=pkg-config state=latest
+
+- name: install gettext
+  package: name=gettext state=latest
+
+- name: install pandoc
+  package: name=pandoc state=latest
+
+- name: install git
+  package: name=git state=latest

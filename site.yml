@@ -1,0 +1,47 @@
+---
+## This playbook deploys mailfruit; this entails installing 0xacab.org/riseuplabs/trees,
+## dovecot, postfix, roundcube and fail2ban in one unified installation. Modularity and automation are
+## goals, but not at the steep cost of my time. Thus, this playbook may be of varying value
+## deployed elsewhere - no guarantees this will work for you!
+
+- hosts: all
+  roles:
+    - apt
+    - tor
+    - fail2ban
+    - mailname
+    - letsencrypt
+
+- hosts: mta_servers
+  roles:
+    - postfix
+  tags:
+    - mta
+
+- hosts: mda_servers
+  roles:
+    - ruby
+    - build
+    - libsodium
+    - backups
+    - dovecot
+    - user_database
+    - trees
+  tags:
+    - mda
+
+## Not yet implemented:
+#- hosts: mua_servers
+#  roles:
+#    - base-nginx
+#    - roundcube
+#  tags:
+#    - web
+#    - mua
+#
+#- hosts: monitoring_servers
+#  roles:
+#    - base-nginx
+#    - $monitoring_software
+#  tags:
+#    - monitoring

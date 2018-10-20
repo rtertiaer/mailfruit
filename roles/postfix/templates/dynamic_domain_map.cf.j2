@@ -1,0 +1,3 @@
+# {{ ansible_managed }}
+dbpath = /var/lib/dovecot/passwd.db
+query = SELECT domain FROM mailboxes WHERE domain='%s'

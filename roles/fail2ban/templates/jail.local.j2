@@ -1,0 +1,55 @@
+# {{ ansible_managed }}
+
+[INCLUDES]
+
+before = paths-debian.conf
+
+
+[DEFAULT]
+# Destination email address used solely for the interpolations in
+# jail.{conf,local,d/*} configuration files.
+destemail = {{ admin_email }}
+
+# Sender email address used solely for some actions
+sender = root@{{ mail_domain }}
+
+[sshd]
+enabled = true
+port    = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+
+
+[sshd-ddos]
+# This jail corresponds to the standard configuration in Fail2ban.
+# The mail-whois action send a notification e-mail with a whois request
+# in the body.
+enabled = true
+port    = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+
+# Jail for more extended banning of persistent abusers
+# !!! WARNINGS !!!
+# 1. Make sure that your loglevel specified in fail2ban.conf/.local
+#    is not at DEBUG level -- which might then cause fail2ban to fall into
+#    an infinite loop constantly feeding itself with non-informative lines
+# 2. Increase dbpurgeage defined in fail2ban.conf to e.g. 648000 (7.5 days)
+#    to maintain entries for failed logins for sufficient amount of time
+[recidive]
+enabled = true
+logpath  = /var/log/fail2ban.log
+banaction = %(banaction_allports)s
+bantime  = 604800  ; 1 week
+findtime = 86400   ; 1 day
+
+
+# Generic filter for PAM. Has to be used with action which bans all
+# ports such as iptables-allports, shorewall
+
+[pam-generic]
+enabled = true
+# pam-generic filter can be customized to monitor specific subset of 'tty's
+banaction = %(banaction_allports)s
+logpath  = %(syslog_authpriv)s
+backend  = %(syslog_backend)s

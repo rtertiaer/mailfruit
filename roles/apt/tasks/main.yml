@@ -1,0 +1,9 @@
+---
+- name: update all packages to latest
+  apt:
+    upgrade: yes
+
+- name: install unattended-upgrades
+  package: 
+    name: unattended-upgrades
+    state: latest

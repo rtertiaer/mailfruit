@@ -1,0 +1,8 @@
+---
+- name: template /etc/mailname
+  template:
+    dest: /etc/mailname
+    src: mailname.j2
+    owner: root
+    group: root
+    mode: 0644

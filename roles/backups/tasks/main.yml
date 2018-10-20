@@ -1,0 +1,54 @@
+---
+# TODO:
+# - encrypt backups with GPG key (manage GPG key?)
+# - arbitrary backup destination
+
+- name: install duplicity
+  package: name=duplicity state=latest
+
+- name: install python-pexpect
+  package: name=python-pexpect state=latest
+
+- name: install par2
+  package: name=par2 state=latest
+
+- name: manage backup location
+  file:
+    state: directory
+    path: /var/backups
+    mode: 0700
+
+- name: manage backup script
+  template:
+    src: backup.sh.j2
+    dest: /usr/local/bin/backup.sh
+    owner: root
+    group: root
+    mode: 0500
+
+- name: manage backup systemd service file
+  template:
+    src: backup.service.j2
+    dest: /etc/systemd/system/backup.service
+    owner: root
+    group: root
+    mode: 0500
+  notify:
+    - reload systemd
+
+- name: manage backup systemd timer file
+  template:
+    src: backup.timer.j2
+    dest: /etc/systemd/system/backup.timer
+    owner: root
+    group: root
+    mode: 0500
+  notify:
+    - reload systemd
+
+- name: enable backup systemd timer
+  systemd:
+    name: backup.timer
+    daemon_reload: yes
+    enabled: yes
+    state: started

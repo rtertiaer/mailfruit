@@ -1,0 +1,52 @@
+- name: create self-signed cert for debug site
+  shell: |
+    mkdir -p /etc/letsencrypt/live/{{ server_hostname }}
+    openssl req -x509 -newkey rsa:4096 -keyout /etc/letsencrypt/live/{{ server_hostname }}/privkey.pem \
+      -out /etc/letsencrypt/live/{{ server_hostname }}/fullchain.pem -days 365 -nodes \
+      -subj '/CN={{ server_hostname }}'
+  args:
+    creates: /etc/letsencrypt/live/{{ server_hostname }}/fullchain.pem
+    warn: false
+  when: debug is defined
+
+- name: install certbot
+  package:
+    name: certbot
+
+- name: request LetsEncrypt certs with certbot
+  shell: |
+    certbot certonly --standalone -d {{ server_hostname }} -m {{ admin_email }} --agree-tos
+  args:
+    creates: /etc/letsencrypt/live/{{ server_hostname }}/fullchain.pem
+
+- name: request renewal of LetsEncrypt cert with certbot
+  shell: |
+    certbot renew --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx; systemctl restart postfix; systemctl restart dovecot"
+
+- name: manage certbot systemd service file
+  template:
+    src: certbot.service.j2
+    dest: /etc/systemd/system/certbot.service
+    owner: root
+    group: root
+    mode: 0500
+  notify:
+    - reload systemd
+
+- name: manage certbot systemd timer file
+  template:
+    src: certbot.timer.j2
+    dest: /etc/systemd/system/certbot.timer
+    owner: root
+    group: root
+    mode: 0500
+  notify:
+    - reload systemd
+
+- name: enable certbot systemd timer
+  systemd:
+    name: certbot.timer
+    daemon_reload: yes
+    enabled: yes
+    state: started
+

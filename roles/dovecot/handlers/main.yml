@@ -1,0 +1,10 @@
+---
+- name: restart dovecot
+  service: name=dovecot state=restarted enabled=yes
+
+- name: restart fail2ban
+  service: name=fail2ban state=restarted enabled=yes
+  # This is necessary because files may not exist right off the bat.
+  # It *does* mean that fail2ban might not be running at the end of
+  # the first run.
+  ignore_errors: yes

@@ -1,0 +1,8 @@
+*.swp
+*.retry
+*.log
+.vagrant
+hosts
+host_vars
+*.pcap
+group_vars/all

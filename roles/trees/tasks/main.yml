@@ -1,0 +1,53 @@
+---
+# This role installs trees for on the fly email encryption.
+
+- name: clone trees over public internet
+  shell: |
+    git -C /usr/src clone https://0xacab.org/riseuplabs/trees.git
+    git -C /usr/src/trees checkout {{ trees_git_ref }}
+  args:
+    creates: /usr/src/trees
+  when: use_tor != 'true'
+
+- name: clone trees through tor
+  shell: |
+    git -C /usr/src clone https://0xacab.org/riseuplabs/trees.git
+    git -C /usr/src/trees checkout {{ trees_git_ref }}
+  args:
+    creates: /usr/src/trees
+  when: use_tor == 'true'
+  environment:
+    ALL_PROXY: '{{ tor_proxy_url | quote }}'
+
+- name: build trees
+  shell: |
+    ./autogen.sh
+    ./configure
+    make
+    cp ./src/.libs/lib18_trees_plugin.so /usr/lib/dovecot/modules/
+  args:
+    chdir: /usr/src/trees
+    creates: /usr/lib/dovecot/modules/lib18_trees_plugin.so
+  notify:
+    - restart dovecot
+
+- name: enable trees in /etc/dovecot/conf.d/11-trees.conf
+  template:
+    src: 11-trees.conf.j2
+    dest: /etc/dovecot/conf.d/11-trees.conf
+    owner: root
+    group: root
+    mode: 644
+    backup: yes
+  notify:
+    - restart dovecot
+
+- name: install rbnacl gem for helper program trees-create
+  gem:
+    name: rbnacl
+    version: 5.0.0
+
+- name: install rbnacl-libsodium gem for helper program trees-create
+  gem:
+    name: rbnacl-libsodium
+    version: 1.0.16

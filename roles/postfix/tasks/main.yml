@@ -1,0 +1,58 @@
+---
+- include_role:
+    name: sqlite3
+
+- name: install postfix
+  package: name=postfix state=latest
+
+- name: enable and start postfix service
+  service: name=postfix state=started enabled=yes
+
+- name: template /etc/postfix/main.cf
+  template: src=main.cf.j2 dest=/etc/postfix/main.cf owner=root group=root mode=644 backup=yes
+  notify:
+    - restart postfix
+
+- name: template /etc/postfix/master.cf
+  template: src=master.cf.j2 dest=/etc/postfix/master.cf owner=root group=root mode=644 backup=yes
+  notify:
+    - restart postfix
+
+- name: template /etc/postfix/dynamic_domain_map.cf
+  template: src=dynamic_domain_map.cf.j2 dest=/etc/postfix/dynamic_domain_map.cf owner=root group=root mode=644 backup=yes
+  notify:
+    - restart postfix
+
+- name: template /etc/postfix/dynamic_mailbox_map.cf
+  template: src=dynamic_mailbox_map.cf.j2 dest=/etc/postfix/dynamic_mailbox_map.cf owner=root group=root mode=644 backup=yes
+  notify:
+    - restart postfix
+
+- name: add postfix jails to fail2ban
+  notify:
+    - restart fail2ban
+  blockinfile:
+    marker: "# {mark} ANSISBLE MANAGED POSTFIX BLOCK"
+    path: /etc/fail2ban/jail.local
+    content: |
+      [postfix]
+      enabled = true
+      port     = smtp,submission
+      logpath  = %(postfix_log)s
+      backend  = %(postfix_backend)s
+
+      [postfix-rbl]
+      enabled = true
+      port     = smtp,submission
+      logpath  = %(postfix_log)s
+      backend  = %(postfix_backend)s
+      maxretry = 1
+
+      [postfix-sasl]
+      enabled = true
+      port     = smtp,465,submission,imap3,imaps,pop3,pop3s
+      # You might consider monitoring /var/log/mail.warn instead if you are
+      # running postfix since it would provide the same log lines at the
+      # "warn" level but overall at the smaller filesize.
+      logpath  = %(postfix_log)s
+      backend  = %(postfix_backend)s

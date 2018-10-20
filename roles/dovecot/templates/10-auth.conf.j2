@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+disable_plaintext_auth = no
+# Space separated list of wanted authentication mechanisms:
+#   plain login digest-md5 cram-md5 ntlm rpa apop anonymous gssapi otp skey
+#   gss-spnego
+# NOTE: See also disable_plaintext_auth setting.
+auth_mechanisms = plain
+!include auth-sql.conf.ext

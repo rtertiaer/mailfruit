@@ -1,0 +1,121 @@
+---
+
+- include_role:
+    name: sqlite3
+
+- name: install dovecot-core
+  package: name=dovecot-core state=latest
+
+- name: install dovecot-sqlite
+  package: name=dovecot-sqlite state=latest
+
+- name: install dovecot-imapd
+  package: name=dovecot-imapd state=latest
+
+- name: manage /var/mail permissions
+  file:
+    path: /var/mail
+    owner: mail
+    group: mail
+
+- name: template /etc/dovecot/conf.d/10-master.conf
+  template: 
+    src: 10-master.conf.j2
+    dest: /etc/dovecot/conf.d/10-master.conf
+    owner: root
+    group: root
+    mode: 644
+    backup: yes
+  notify:
+    - restart dovecot
+
+- name: template /etc/dovecot/conf.d/10-auth.conf
+  template: 
+    src: 10-auth.conf.j2
+    dest: /etc/dovecot/conf.d/10-auth.conf
+    owner: root
+    group: root
+    mode: 644
+    backup: yes
+  notify:
+    - restart dovecot
+
+- name: template /etc/dovecot/conf.d/10-mail.conf
+  template: 
+    src: 10-mail.conf.j2
+    dest: /etc/dovecot/conf.d/10-mail.conf
+    owner: root
+    group: root
+    mode: 644
+    backup: yes
+  notify:
+    - restart dovecot
+
+- name: template /etc/dovecot/conf.d/10-ssl.conf
+  template: 
+    src: 10-ssl.conf.j2
+    dest: /etc/dovecot/conf.d/10-ssl.conf
+    owner: root
+    group: root
+    mode: 644
+    backup: yes
+  notify:
+    - restart dovecot
+
+- name: template /etc/dovecot/conf.d/20-imap.conf
+  template: 
+    src: 20-imap.conf.j2
+    dest: /etc/dovecot/conf.d/20-imap.conf
+    owner: root
+    group: root
+    mode: 644
+    backup: yes
+  notify:
+    - restart dovecot
+
+- name: template /etc/dovecot/dovecot-sql.conf.ext
+  template:
+    src: dovecot-sql.conf.ext.j2
+    dest: /etc/dovecot/dovecot-sql.conf.ext
+    owner: root
+    group: root
+    mode: 644
+    backup: yes
+  notify:
+    - restart dovecot
+
+- name: template /etc/dovecot/conf.d/auth-sql.conf.ext
+  template:
+    src: auth-sql.conf.ext.j2
+    dest: /etc/dovecot/conf.d/auth-sql.conf.ext
+    owner: root
+    group: root
+    mode: 644
+    backup: yes
+  notify:
+    - restart dovecot
+
+- name: add dovecot jails to fail2ban
+  notify:
+    - restart fail2ban
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED DOVECOT BLOCK"
+    path: /etc/fail2ban/jail.local
+    content: |
+      [dovecot]
+      enabled = true
+      port    = imap,imaps,submission,sieve
+      logpath = %(dovecot_log)s
+      backend = %(dovecot_backend)s
+
+
+      [sieve]
+      enabled = true
+      port   = smtp,submission
+      logpath = %(dovecot_log)s
+      backend = %(dovecot_backend)s
+
+- import_tasks: dovecot-libsodium-plugin.yml
+
+- name: enable and start dovecot service
+  service: name=dovecot state=started enabled=yes

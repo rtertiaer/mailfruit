@@ -1,0 +1,12 @@
+#!/bin/bash
+# Simple shell script to take backups
+
+# Backup both the maildir and database. The database is always a full backup, maildir is weekly 
+# fulls and daily incrementals
+duplicity --full-if-older-than 1W --no-encryption /var/mail par2+file:///var/backups/maildir
+duplicity full --no-encryption /var/lib/dovecot/passwd.db par2+file:///var/backups/database
+
+# Rotate old backups
+# TODO: This is broken right now due to poor handling of par2 files
+#duplicity remove-all-but-n-full 3 --force file:///var/backups/database
+#duplicity remove-all-but-n-full 3 --force file:///var/backups/maildir

@@ -1,0 +1,64 @@
+#!/bin/bash
+# To use this script, fill out the variables user, domain, password_blob and
+# doveadm_pw_output and then run.
+
+set -euo pipefail
+
+function print_help {
+  echo "$0
+-u      user
+-d      domain
+-p      password
+-h      help"
+}
+
+trap print_help EXIT
+
+while getopts ":u:d:p:h" opt; do
+  case ${opt} in
+    u)
+      user="${OPTARG}"
+      ;;
+    d)
+      domain="${OPTARG}"
+      ;;
+    p)
+      # Keep in mind that these are sensitive commands. If you're paranoid, run on a
+      # separate secure machine.
+      password_blob="$(/usr/src/trees/bin/trees-create --password ${OPTARG})"
+      doveadm_pw_output="$(doveadm pw -s argon2 -p ${OPTARG})"
+      ;;
+    h)
+      print_help
+      exit
+      ;;
+    \?)
+      echo "Invalid option: -${OPTARG}"
+      exit
+  esac
+done
+
+filename='/var/lib/dovecot/passwd.db'
+
+public_key=$(echo ${password_blob} | jq -r .public_key)
+secretbox=$(echo ${password_blob} | jq -r .locked_secretbox)
+sk_nonce=$(echo ${password_blob} | jq -r .sk_nonce)
+opslimit=$(echo ${password_blob} | jq -r .pwhash_opslimit)
+memlimit=$(echo ${password_blob} | jq -r .pwhash_memlimit)
+salt=$(echo ${password_blob} | jq -r .pwhash_salt)
+
+# Fetch the max UID and increment it for use
+max_existing_uid=$(echo "SELECT MAX(user_id) from mailboxes;" | sqlite3 ${filename})
+uid=$(( ${max_existing_uid} + 1 ))
+mailbox_query="INSERT INTO mailboxes (user_id, username, domain, maildir, is_active, password)
+         VALUES (${uid}, '${user}', '${domain}', '/var/mail/', 1, '${doveadm_pw_output}');"
+
+storage_key_query="INSERT INTO storage_keys (public_key, pwhash_opslimit, pwhash_memlimit,
+        pwhash_salt, sk_nonce, locked_secretbox, user_id) VALUES (
+        '${public_key}', ${opslimit}, ${memlimit}, '${salt}', '${sk_nonce}', '${secretbox}', ${uid}
+        );"
+
+# take a backup then actually do the work
+/usr/local/bin/backup.sh
+echo "${mailbox_query}" | sqlite3 ${filename} 
+echo "${storage_key_query}" | sqlite3 ${filename}

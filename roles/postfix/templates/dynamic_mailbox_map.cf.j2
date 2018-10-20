@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+# This query must return the fully qualified destination email as its response to satisfy the 'submission'
+# daemon's smtpd_sender_restriction "reject_sender_login_mismatch"
+dbpath = /var/lib/dovecot/passwd.db
+query = SELECT username||'@'||domain FROM mailboxes WHERE username='%u' AND domain='%d' AND is_active=1;

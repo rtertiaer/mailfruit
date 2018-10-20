@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+mail_location = maildir:/var/mail/%d/%n:INDEX=MEMORY
+namespace inbox {
+  inbox = yes
+}
+mail_uid = mail
+mail_gid = mail
+
+first_valid_uid=8
+last_valid_uid=8
+
+# This configuration options is necessary when using Trees
+maildir_broken_filename_sizes = yes
