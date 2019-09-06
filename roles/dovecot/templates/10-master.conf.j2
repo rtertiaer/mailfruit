@@ -16,8 +16,9 @@
 #default_internal_user = dovecot
 
 service imap-login {
-  inet_listener imap {
-    port = 143
+  inet_listener imaps {
+    port = 993
+    ssl  = yes
   }
 
   # Number of connections to handle before starting a new process. Typically
@@ -55,7 +56,7 @@ service lmtp {
   #}
 }
 
-service imap {
+service imaps {
   # Most of the memory goes to mmap()ing files. You may need to increase this
   # limit if you have huge mailboxes.
   #vsz_limit = $default_vsz_limit
@@ -64,9 +65,9 @@ service imap {
   process_limit = 128
 }
 
-service pop3 {
+service pop3s {
   # Max. number of POP3 processes (connections)
-  #process_limit = 1024
+  process_limit = 128
 }
 
 service auth {

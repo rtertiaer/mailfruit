@@ -47,17 +47,18 @@ ssl_key = </etc/letsencrypt/live/{{ server_hostname }}/privkey.pem
 #ssl_dh_parameters_length = 1024
 
 # SSL protocols to use
-#ssl_protocols = !SSLv3
+ssl_protocols = TLSv1.2
 
 # SSL ciphers to use
-#ssl_cipher_list = ALL:!LOW:!SSLv2:!EXP:!aNULL
+# This list is from https://www.acunetix.com/blog/articles/tls-ssl-cipher-hardening/
+ssl_cipher_list = ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
 
 # Prefer the server's order of ciphers over client's.
-#ssl_prefer_server_ciphers = no
+ssl_prefer_server_ciphers = yes
 
 # SSL crypto device to use, for valid values run "openssl engine"
 #ssl_crypto_device =
 
 # SSL extra options. Currently supported options are:
 #   no_compression - Disable compression.
-#ssl_options =
+ssl_options = no_compression

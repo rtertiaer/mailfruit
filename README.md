@@ -49,6 +49,7 @@ mda_servers
 
 ## TODO
 This is a work in progress. Roadmap:
+- Simplify that crazy setup above
 - Make this into a regular Ansible role, ie suitable for the Galaxy
 - (more) Tor hidden service integrations (IMAP, SUBMISSION, SSH)
 - AppArmor profiles
