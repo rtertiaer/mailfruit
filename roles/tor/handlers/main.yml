@@ -4,3 +4,7 @@
     name: tor
     state: restarted
     enabled: yes
+
+- name: apt update
+  apt:
+    update_cache: yes

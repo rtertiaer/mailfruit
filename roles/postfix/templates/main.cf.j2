@@ -54,3 +54,9 @@ virtual_mailbox_domains = sqlite:/etc/postfix/dynamic_domain_map.cf
 local_transport = dovecot
 local_recipient_maps = $virtual_mailbox_maps
 smtpd_sender_login_maps = $virtual_mailbox_maps
+
+# OpenDKIM
+milter_protocol = 2
+milter_default_action = accept
+smtpd_milters = inet:127.0.0.1:12301
+non_smtpd_milters = inet:127.0.0.1:12301

@@ -20,11 +20,19 @@
 # TODO: elegantly manage what Tor proxy to use for apt; until
 # then do not use hidden service mirrors
 - name: template /etc/apt/sources.list to use Tor hidden service mirror
-  template: src=apt_sources.list.j2 dest=/etc/apt/sources.list owner=root group=root mode=644 backup=yes
+  template:
+    src: apt_sources.list.j2
+    dest: /etc/apt/sources.list
+    owner: root
+    group: root
+    mode: 644
+    backup: yes
   when:
   - manage_tor == 'true'
   - use_tor == 'true'
   - tor_proxy_url == 'socks5h://127.0.0.1:9050'
+  notify:
+  - apt update
 
 - name: apt-get update to download package lists from Tor hidden service
   apt:
