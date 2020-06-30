@@ -25,6 +25,7 @@ password_query = SELECT \
   storage_keys.pwhash_opslimit              AS userdb_trees_pwhash_opslimit, \
   storage_keys.pwhash_memlimit              AS userdb_trees_pwhash_memlimit, \
   storage_keys.pwhash_salt                  AS userdb_trees_pwhash_salt, \
+  storage_keys.pwhash_algo                  AS userdb_trees_pwhash_algo, \
   1                                         AS userdb_trees_version \
   FROM mailboxes \
   LEFT OUTER JOIN storage_keys ON mailboxes.user_id = storage_keys.user_id \

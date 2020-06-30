@@ -39,6 +39,7 @@
       'id' INTEGER PRIMARY KEY,
       'enabled' tinyint(4) DEFAULT '1',
       'public_key' text,
+      'pwhash_algo' tinyint(4) DEFAULT '0',
       'pwhash_opslimit' int(11) DEFAULT NULL,
       'pwhash_memlimit' int(11) DEFAULT NULL,
       'pwhash_salt' varchar(255) DEFAULT NULL,

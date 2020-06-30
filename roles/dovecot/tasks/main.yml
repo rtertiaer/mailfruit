@@ -12,6 +12,19 @@
 - name: install dovecot-imapd
   package: name=dovecot-imapd state=latest
 
+- name: create large Diffie-Hellman parameters
+  command: openssl dhparam 4096 > dh.pem
+  args:
+    chdir: /etc/dovecot/private
+    creates: /etc/dovecot/private/dh.pem
+
+- name: manage Diffie-Hellman parameters
+  file:
+    path: /etc/dovecot/private/dh.pem
+    mode: 0500
+    owner: root
+    group: root
+
 - name: manage /var/mail permissions
   file:
     path: /var/mail

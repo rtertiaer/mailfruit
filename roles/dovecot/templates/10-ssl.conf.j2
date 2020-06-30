@@ -45,9 +45,10 @@ ssl_key = </etc/letsencrypt/live/{{ server_hostname }}/privkey.pem
 
 # DH parameters length to use.
 #ssl_dh_parameters_length = 1024
+ssl_dh=</etc/dovecot/private/dh.pem
 
 # SSL protocols to use
-ssl_protocols = TLSv1.2
+ssl_min_protocol = TLSv1.2
 
 # SSL ciphers to use
 # This list is from https://www.acunetix.com/blog/articles/tls-ssl-cipher-hardening/
