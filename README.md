@@ -14,7 +14,7 @@ on a single host.
 You can run temporary test instances of this codebase with Vagrant; simply install Vagrant and run `vagrant up`.
 
 You can also install this on a standalone server for production use:
-- Start a new Debian 10 (`buster`) server (tested most recently on 10.4.)
+- Start a new Debian 11 (`bullseye`) server.
   - We recommend setting up an encrypted root volume.
   - If you're paranoid, we recommend avoiding rented servers from cloud providers like AWS and DigitalOcean, who have the ability to peer into your server's RAM and negate all the following security measures. If you must use a third party to host your internet facing ports, consider using something like HAProxy to forward your traffic through a VPN or Tor to hardware you do control.
 - Set up DNS records for your host: an A record for its hostname, and MX records for all domains for which you want to receive mail.

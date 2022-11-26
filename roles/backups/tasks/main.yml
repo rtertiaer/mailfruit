@@ -6,8 +6,8 @@
 - name: install duplicity
   package: name=duplicity state=latest
 
-- name: install python-pexpect
-  package: name=python-pexpect state=latest
+- name: install python3-pexpect
+  package: name=python3-pexpect state=latest
 
 - name: install par2
   package: name=par2 state=latest
