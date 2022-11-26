@@ -11,7 +11,7 @@ biff = no
 append_dot_mydomain = no
 
 # Uncomment the next line to generate "delayed mail" warnings
-#delay_warning_time = 4h
+delay_warning_time = 4h
 
 readme_directory = no
 
@@ -38,6 +38,7 @@ smtpd_sasl_path = private/auth
 smtpd_sasl_auth_enable = yes
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 smtpd_recipient_restrictions = reject_unauth_destination
+smtpd_client_restrictions = sleep 1, reject_unauth_pipelining
 myhostname = {{ server_hostname }}
 myorigin = /etc/mailname
 mydestination = localhost

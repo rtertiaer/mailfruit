@@ -22,7 +22,7 @@ smtps     inet  n       -       n       -       -       smtpd
   -o smtpd_reject_unlisted_recipient=no
   -o smtpd_client_restrictions=permit_sasl_authenticated,reject
   -o smtpd_sender_restrictions=reject_sender_login_mismatch
-  -o smtpd_recipient_restrictions=reject_non_fqdn_recipient,reject_unknown_recipient_domain,permit_sasl_authenticated,reject
+  -o smtpd_recipient_restrictions=reject_non_fqdn_recipient,reject_unknown_recipient_domain,permit_sasl_authenticated,defer_if_reject,reject_unknown_client_hostname,reject
   -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
   -o milter_macro_daemon_name=ORIGINATING
 pickup    unix  n       -       n       60      1       pickup
