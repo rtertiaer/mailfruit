@@ -1,3 +1,0 @@
----
-- name: install jq 
-  package: name=jq state=latest

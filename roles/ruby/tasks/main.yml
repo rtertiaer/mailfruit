@@ -1,6 +1,0 @@
----
-- name: install ruby
-  package: name=ruby state=latest
-
-- name: install ruby-dev
-  package: name=ruby-dev state=latest

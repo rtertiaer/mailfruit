@@ -1,0 +1,110 @@
+---
+- name: Install dovecot packages
+  ansible.builtin.apt:
+    name:
+      - dovecot-core
+      - dovecot-sqlite
+      - dovecot-imapd
+    state: present
+
+- name: Create large Diffie-Hellman parameters
+  ansible.builtin.command: openssl dhparam 4096 > dh.pem
+  args:
+    chdir: /etc/dovecot/private
+    creates: /etc/dovecot/private/dh.pem
+
+- name: Manage Diffie-Hellman parameters
+  ansible.builtin.file:
+    path: /etc/dovecot/private/dh.pem
+    mode: '0500'
+    owner: root
+    group: root
+
+- name: Manage /var/mail permissions
+  ansible.builtin.file:
+    path: /var/mail
+    owner: mail
+    group: mail
+
+- name: Template /etc/dovecot/conf.d/10-master.conf
+  ansible.builtin.template: 
+    src: dovecot/10-master.conf.j2
+    dest: /etc/dovecot/conf.d/10-master.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart dovecot
+
+- name: Template /etc/dovecot/conf.d/10-auth.conf
+  ansible.builtin.template: 
+    src: dovecot/10-auth.conf.j2
+    dest: /etc/dovecot/conf.d/10-auth.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart dovecot
+
+- name: Template /etc/dovecot/conf.d/10-mail.conf
+  ansible.builtin.template: 
+    src: dovecot/10-mail.conf.j2
+    dest: /etc/dovecot/conf.d/10-mail.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart dovecot
+
+- name: Template /etc/dovecot/conf.d/10-ssl.conf
+  ansible.builtin.template: 
+    src: dovecot/10-ssl.conf.j2
+    dest: /etc/dovecot/conf.d/10-ssl.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart dovecot
+
+- name: Template /etc/dovecot/conf.d/20-imap.conf
+  ansible.builtin.template: 
+    src: dovecot/20-imap.conf.j2
+    dest: /etc/dovecot/conf.d/20-imap.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart dovecot
+
+- name: Template /etc/dovecot/dovecot-sql.conf.ext
+  ansible.builtin.template:
+    src: dovecot/dovecot-sql.conf.ext.j2
+    dest: /etc/dovecot/dovecot-sql.conf.ext
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart dovecot
+
+- name: Template /etc/dovecot/conf.d/auth-sql.conf.ext
+  ansible.builtin.template:
+    src: dovecot/auth-sql.conf.ext.j2
+    dest: /etc/dovecot/conf.d/auth-sql.conf.ext
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart dovecot
+
+- name: Enable and start dovecot service
+  ansible.builtin.systemd: 
+    name: dovecot
+    state: started
+    enabled: yes

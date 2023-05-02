@@ -1,0 +1,9 @@
+---
+- name: Install certbot
+  ansible.builtin.apt:
+    name: certbot
+
+- name: Request PKI certificates with certbot
+  ansible.builtin.command:
+    cmd: "certbot certonly --authenticator {{ mailfruit_certbot_authenticator }} --agree-tos --email {{ mailfruit_admin_email }} -n -d {{ mailfruit_server_hostname }}"
+    creates: "/etc/letsencrypt/live/{{ mailfruit_server_hostname }}/fullchain.pem"

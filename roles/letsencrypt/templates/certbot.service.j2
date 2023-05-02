@@ -1,5 +1,0 @@
-[Unit]
-Description=Request certbot certificate renewal
-
-[Service]
-ExecStart=/usr/bin/certbot renew --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx; systemctl restart dovecot; systemctl restart postfix"

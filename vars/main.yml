@@ -1,0 +1,9 @@
+---
+# Set the below value to the commit ID or reference (ie 'master') of trees to checkout and compile
+# This is to gate when upstream breaks, which happens occasionally (as with all software)
+# The below has the comment "libsodium <= 1.0.14 patch"
+mailfruit_trees_git_ref: '14fed7d1ffa5d568224c1e4732fa563e83b22e3e'
+
+# Should you have something running on port 80 already, change this to a certbot
+# plugin that knows better what to do.
+mailfruit_certbot_authenticator: 'standalone'
