@@ -1,3 +1,0 @@
----
-- name: install sqlite3
-  package: name=sqlite3 state=latest

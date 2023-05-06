@@ -1,5 +1,0 @@
----
-# Set the below value to the commit ID or reference (ie 'master') of trees to checkout and compile
-# This is to gate when upstream breaks, which happens occasionally (as with all software)
-# The below has the comment "libsodium <= 1.0.14 patch"
-trees_git_ref: 'ed0bbfb2746e620593b17668b4cd660b5aaf6e18'

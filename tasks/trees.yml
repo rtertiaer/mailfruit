@@ -1,0 +1,41 @@
+---
+- name: Clone trees repository
+  ansible.builtin.git:
+    repo: https://0xacab.org/liberate/trees.git
+    dest: /usr/src/trees
+    version: "{{ mailfruit_trees_git_ref }}"
+
+- name: Build trees
+  ansible.builtin.shell: |
+    ./autogen.sh
+    ./configure
+    make
+    make install
+  args:
+    chdir: /usr/src/trees
+    creates: /usr/lib/dovecot/modules/lib18_trees_plugin.so
+  notify:
+    - Restart dovecot
+
+- name: Enable trees in /etc/dovecot/conf.d/11-trees.conf
+  ansible.builtin.template:
+    src: 11-trees.conf.j2
+    dest: /etc/dovecot/conf.d/11-trees.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart dovecot
+
+- name: Install ruby packages
+  ansible.builtin.apt:
+    name:
+      - ruby
+      - ruby-dev
+    state: present
+
+- name: Install rbnacl gem for helper program trees-create
+  community.general.gem:
+    name: rbnacl
+    version: 7.1.1

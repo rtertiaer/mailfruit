@@ -1,0 +1,29 @@
+---
+# tasks file for mailfruit
+- name: Install base
+  include_tasks:
+    file: base.yml
+
+- name: Use certbot to install certs
+  include_tasks:
+    file: certbot.yml
+
+- name: Install opendkim
+  include_tasks:
+    file: opendkim.yml
+
+- name: Install postfix
+  include_tasks:
+    file: postfix.yml
+
+- name: Install dovecot
+  include_tasks:
+    file: dovecot.yml
+
+- name: Install trees
+  include_tasks:
+    file: trees.yml
+
+- name: Install user database
+  include_tasks:
+    file: user_database.yml

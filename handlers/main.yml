@@ -1,0 +1,16 @@
+---
+# handlers file for mailfruit
+- name: Restart dovecot
+  ansible.builtin.systemd:
+    name: dovecot
+    state: restarted
+
+- name: Restart postfix
+  ansible.builtin.systemd:
+    name: postfix
+    state: restarted
+
+- name: Restart opendkim
+  ansible.builtin.systemd:
+    name: opendkim
+    state: restarted

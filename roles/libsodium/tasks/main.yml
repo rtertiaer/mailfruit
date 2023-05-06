@@ -1,4 +1,0 @@
----
-# Installs libsodium headers, as well as current build from Debian
-- name: Install libsodium-dev
-  package: name=libsodium-dev state=latest

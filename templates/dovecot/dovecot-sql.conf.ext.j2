@@ -1,0 +1,55 @@
+# {{ ansible_managed }}
+
+driver = sqlite
+connect = /var/lib/dovecot/passwd.db
+
+##
+## PASSWORD QUERY
+##
+## because prefetch is enabled, the userdb_x entries will be used to populate
+## user object.
+##
+
+password_query = SELECT \
+  mailboxes.username                        AS username, \
+  mailboxes.domain                          AS domain, \
+  mailboxes.password                        AS password, \
+  8                                         AS userdb_uid, \
+  8                                         AS userdb_gid, \
+  '/maildir/' || mailboxes.maildir          AS userdb_home, \
+  '%w'                                      AS userdb_trees_password, \
+  storage_keys.enabled                      AS userdb_trees_enabled, \
+  storage_keys.version                      AS userdb_trees_version, \
+  storage_keys.public_key                   AS userdb_trees_public_key, \
+  storage_keys.locked_secretbox             AS userdb_trees_locked_secretbox, \
+  storage_keys.sk_nonce                     AS userdb_trees_sk_nonce, \
+  storage_keys.pwhash_opslimit              AS userdb_trees_pwhash_opslimit, \
+  storage_keys.pwhash_memlimit              AS userdb_trees_pwhash_memlimit, \
+  storage_keys.pwhash_salt                  AS userdb_trees_pwhash_salt, \
+  storage_keys.pwhash_algo                  AS userdb_trees_pwhash_algo \
+  FROM mailboxes \
+  LEFT OUTER JOIN storage_keys ON mailboxes.user_id = storage_keys.user_id \
+  WHERE mailboxes.username = '%n' AND mailboxes.domain = '%d' \
+  AND mailboxes.is_active = 1
+
+##
+## USER QUERY
+##
+## user_query is used to return the location of the mailbox and check the quota
+## because we have prefetch enabled, this query is only used for LDA.
+##
+
+user_query = SELECT \
+  8                                         AS uid, \
+  8                                         AS gid, \
+  '/maildir/' || mailboxes.maildir          AS home, \
+  storage_keys.enabled                      AS trees_enabled, \
+  storage_keys.public_key                   AS trees_public_key, \
+  storage_keys.version                      AS trees_version, \
+  '*:bytes=' || mailboxes.quota             AS quota_rule \
+  FROM mailboxes \
+  LEFT OUTER JOIN storage_keys ON mailboxes.user_id = storage_keys.user_id \
+  WHERE mailboxes.username = '%n' AND mailboxes.domain = '%d' \
+  AND mailboxes.is_active = 1
+
+default_pass_scheme = ARGON2ID

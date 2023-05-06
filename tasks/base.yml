@@ -1,0 +1,19 @@
+---
+- name: Update apt package cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install base packages for services
+  ansible.builtin.apt:
+    name: 
+      - sqlite3
+      - build-essential
+      - autoconf
+      - automake
+      - libtool
+      - pkg-config
+      - gettext
+      - pandoc
+      - git
+      - libsodium-dev
+    state: present

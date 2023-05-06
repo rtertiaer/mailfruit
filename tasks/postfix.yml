@@ -1,0 +1,67 @@
+---
+- name: Template /etc/mailname
+  ansible.builtin.template:
+    src: postfix/mailname.j2
+    dest: /etc/mailname
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart postfix
+
+- name: Install postfix & friends
+  ansible.builtin.apt:
+    name:
+      - postfix
+      - postfix-sqlite
+    state: present
+
+- name: Enable and start postfix service
+  ansible.builtin.systemd:
+    name: postfix
+    state: started
+    enabled: yes
+
+- name: Template /etc/postfix/main.cf
+  ansible.builtin.template:
+    src: postfix/main.cf.j2
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart postfix
+
+- name: Template /etc/postfix/master.cf
+  ansible.builtin.template:
+    src: postfix/master.cf.j2
+    dest: /etc/postfix/master.cf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart postfix
+
+- name: Template /etc/postfix/dynamic_domain_map.cf
+  ansible.builtin.template:
+    src: postfix/dynamic_domain_map.cf.j2
+    dest: /etc/postfix/dynamic_domain_map.cf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart postfix
+
+- name: Template /etc/postfix/dynamic_mailbox_map.cf
+  ansible.builtin.template:
+    src: postfix/dynamic_mailbox_map.cf.j2
+    dest: /etc/postfix/dynamic_mailbox_map.cf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - Restart postfix
