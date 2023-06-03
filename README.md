@@ -1,7 +1,7 @@
 # mailfruit
 
 This role deploys a reasonably secure small mail server stack. This Ansible playbook installs and configures:
-- [TREES from riseuplabs](https://0xacab.org/riseuplabs/trees)
+- [TREES from riseuplabs](https://0xacab.org/liberate/trees)
 - [Dovecot](https://en.wikipedia.org/wiki/Dovecot_(software))
 - [Postfix](https://en.wikipedia.org/wiki/Postfix_(software))
 - [sqlite3](https://en.wikipedia.org/wiki/SQLite) user database
