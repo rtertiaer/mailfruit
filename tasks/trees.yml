@@ -1,19 +1,21 @@
 ---
 - name: Clone trees repository
   ansible.builtin.git:
-    repo: https://0xacab.org/liberate/trees.git
-    dest: /usr/src/trees
+    repo: https://0xacab.org/studcavity/trees.git
+    dest: /usr/local/src/trees
     version: "{{ mailfruit_trees_git_ref }}"
+  register: trees_clone
 
 - name: Build trees
   ansible.builtin.shell: |
     ./autogen.sh
-    ./configure
+    ./configure --with-moduledir=/usr/lib/dovecot/modules
     make
     make install
   args:
-    chdir: /usr/src/trees
-    creates: /usr/lib/dovecot/modules/lib18_trees_plugin.so
+    chdir: /usr/local/src/trees
+  when: trees_clone.changed # noqa: no-handler
+  changed_when: true
   notify:
     - Restart dovecot
 

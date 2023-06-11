@@ -25,7 +25,7 @@ while getopts ":u:d:p:h" opt; do
     p)
       # Keep in mind that these are sensitive commands. If you're paranoid, run on a
       # separate secure machine.
-      password_blob="$(/usr/src/trees/bin/trees-create --password ${OPTARG})"
+      password_blob="$(/usr/local/src/trees/bin/trees-create --password ${OPTARG})"
       doveadm_pw_output="$(doveadm pw -s argon2id -r 5 -p ${OPTARG})"
       ;;
     h)
