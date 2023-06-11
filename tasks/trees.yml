@@ -14,9 +14,10 @@
     make install
   args:
     chdir: /usr/local/src/trees
+  when: trees_clone.changed # noqa: no-handler
+  changed_when: true
   notify:
     - Restart dovecot
-  when: trees_clone.changed
 
 - name: Enable trees in /etc/dovecot/conf.d/11-trees.conf
   ansible.builtin.template:
