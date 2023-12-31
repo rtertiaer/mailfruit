@@ -52,4 +52,10 @@ user_query = SELECT \
   WHERE mailboxes.username = '%n' AND mailboxes.domain = '%d' \
   AND mailboxes.is_active = 1
 
+## ITERATE QUERY
+## useful for doveadm iterating users; doveadm can syncronize mailboxes across servers
+## and take backups, among other things. (I don't think the syncronization works though...)
+iterate_query = SELECT username, domain FROM mailboxes
+
+
 default_pass_scheme = ARGON2ID
