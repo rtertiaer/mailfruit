@@ -1,6 +1,5 @@
 ---
 # This play should occur before Postfix.
-# TODO: handle multiple domains better
 - name: Install opendkim
   ansible.builtin.apt:
     name:
@@ -16,9 +15,8 @@
     group: opendkim
     mode: '0750'
 
-# TODO: output pubkey; save this in a better spot to permit multiple domains
 - name: Make opendkim key
-  ansible.builtin.command: "opendkim-genkey -s mail -d {{ mailfruit_mail_domain }}"
+  ansible.builtin.command: "opendkim-genkey -s mail"
   args:
     chdir: /etc/opendkim/keys
     creates: /etc/opendkim/keys/mail.private

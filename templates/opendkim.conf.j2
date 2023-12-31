@@ -8,7 +8,8 @@ LogWhy                  Yes
 Canonicalization        relaxed/simple
 
 InternalHosts           csl:127.0.0.1/24,localhost
-Domain                  csl:{{ mailfruit_mail_domain }}
+Domain                  csl:{% for domain in mailfruit_mail_domains %}{{ domain }}{% if not loop.last %},{% endif %}{% endfor %}
+
 KeyFile                 /etc/opendkim/keys/mail.private
 Selector                mail
 

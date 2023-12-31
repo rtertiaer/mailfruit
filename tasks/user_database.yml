@@ -83,7 +83,7 @@
 - name: Test for test user
   ansible.builtin.shell: |
     set -o pipefail
-    echo "select user_id from mailboxes where username='test' and domain='{{ mailfruit_mail_domain }}';" | sqlite3 /var/lib/dovecot/passwd.db
+    echo "select user_id from mailboxes where username='test' and domain='{{ mailfruit_mail_domains[0] }}';" | sqlite3 /var/lib/dovecot/passwd.db
   register: test_user
   args:
     executable: /bin/bash
