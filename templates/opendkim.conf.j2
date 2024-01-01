@@ -11,7 +11,7 @@ InternalHosts           csl:127.0.0.1/24,localhost
 Domain                  csl:{% for domain in mailfruit_mail_domains %}{{ domain }}{% if not loop.last %},{% endif %}{% endfor %}
 
 KeyFile                 /etc/opendkim/keys/mail.private
-Selector                mail
+Selector                {{ mailfruit_dkim_selector }}
 
 Mode                    sv
 PidFile                 /var/run/opendkim/opendkim.pid
