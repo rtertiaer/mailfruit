@@ -16,10 +16,10 @@
     mode: '0750'
 
 - name: Make opendkim key
-  ansible.builtin.command: "opendkim-genkey -s mail"
+  ansible.builtin.command: "opendkim-genkey -s {{ mailfruit_dkim_selector }}"
   args:
     chdir: /etc/opendkim/keys
-    creates: /etc/opendkim/keys/mail.private
+    creates: "/etc/opendkim/keys/{{ mailfruit_dkim_selector }}.private"
 
 - name: Set dkim key permissions
   ansible.builtin.file:
@@ -35,6 +35,8 @@
     path: /etc/default/opendkim
     regexp: '^SOCKET='
     line: 'SOCKET="inet:12301@127.0.0.1"'
+  notify:
+    - Restart opendkim
 
 - name: Manage /etc/opendkim.conf
   ansible.builtin.template:

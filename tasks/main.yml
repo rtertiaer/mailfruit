@@ -30,4 +30,4 @@
 
 - name: Post-deploy reminders
   ansible.builtin.debug:
-    msg: "Please ensure the DKIM TXT record at /etc/opendkim/keys/mail.txt is hosted for each domain. Each server generates its own; be sure to host each server's key for each domain!"
+    msg: "Please ensure the DKIM TXT record at /etc/opendkim/keys/{{ mailfruit_dkim_selector }}.txt is hosted for each domain. Each server generates its own; be sure to host each server's key for each domain!"
