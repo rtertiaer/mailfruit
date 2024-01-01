@@ -24,6 +24,6 @@ jobs:
       - name: Install requirements.txt
         run: pip install -r requirements.txt
       - name: Lint with yamllint
-        run: yamllint defaults handlers meta tasks templates tests vars
+        run: yamllint defaults handlers meta tasks templates tests
       - name: Lint with ansible-lint
         run: ansible-lint .

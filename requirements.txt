@@ -1,7 +1,7 @@
 ansible==8.5.0
-ansible-compat==4.1.2
+ansible-compat==4.1.10
 ansible-core==2.15.8
-ansible-lint==6.17.0
+ansible-lint==6.22.1
 arrow==1.2.3
 attrs==23.1.0
 binaryornot==0.4.4
@@ -39,7 +39,8 @@ PyYAML==6.0
 requests==2.31.0
 resolvelib==0.8.1
 rich==13.3.5
-ruamel.yaml==0.17.22
+ruamel.yaml==0.18.5
+ruamel.yaml.clib==0.2.8
 six==1.16.0
 subprocess-tee==0.4.1
 text-unidecode==1.3
