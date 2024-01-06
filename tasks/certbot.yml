@@ -4,7 +4,10 @@
     name: certbot
 
 # TODO: move this to loop over _extra_server_hostnames using `with_items`. That would require some re-wiring for, say, mail.$domain & imap.$domain, so this works for me for now.
+# TODO: this is less than idempotent; implement a `changed_when`
 - name: Request PKI certificates with certbot
   ansible.builtin.command:
-    cmd: "certbot certonly --renew-with-new-domains --authenticator {{ mailfruit_certbot_authenticator }} --agree-tos --email {{ mailfruit_admin_email }} -n -d {{ mailfruit_server_hostname }}{% if mailfruit_extra_server_hostnames is defined %}{% for extra in mailfruit_extra_server_hostnames %} -d {{ extra }}{% endfor %}{% endif %}"
-    creates: "/etc/letsencrypt/live/{{ mailfruit_server_hostname }}/fullchain.pem"
+    cmd: "certbot certonly --renew-with-new-domains --expand --authenticator {{ mailfruit_certbot_authenticator }} --agree-tos --email {{ mailfruit_admin_email }} -n -d {{ mailfruit_server_hostname }}{% if mailfruit_extra_server_hostnames is defined %}{% for extra in mailfruit_extra_server_hostnames %} -d {{ extra }}{% endfor %}{% endif %}"
+  notify:
+    - Restart dovecot
+    - Restart postfix
