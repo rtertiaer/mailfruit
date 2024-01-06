@@ -11,7 +11,7 @@ on a single host.
 
 ## Requirements
 * Debian 12+
-* The hostname in `mailfruit_server_hostname` pointing to the server
+* The hostname in `mailfruit_server_hostname` pointing to the server(s) this is deployed to, for Certbot to grab certificates :)
 
 ## Role Variables
 * `mailfruit_server_hostname` - *required*
@@ -20,17 +20,10 @@ on a single host.
 * `mailfruit_certbot_authenticator` - _optional_, default: `standalone`
 * `mailfruit_trees_git_ref` - _optional_, default: `master`
 * `mailfruit_dkim_selector` - _optional_, default: `mail`. Set this to something unique per-server, unless you syncronize your DKIM keys another way.
-
-## Example Playbook
-
-```
-- hosts: mail_servers
-  roles:
-    - { role: rtasson.mailfruit, mailfruit_server_hostname: "big.blah.com" }
-```
+* `mailfruit_extra_server_hostnames` - _optional_, default: undefined. A list of extra hostnames to fetch SSL certificates for, with certbot.
 
 ## Some notes
-I've opted to require TLS at every step with pre-wrapped ports - ie, using port 993 for IMAPS instead of 143, where TLS is negotiated within a cleartext connection. Not all clients like this, but it can prevent attacks where the TLS negotiation is stripped out of the cleartext.
+I've opted to require TLS at every step with pre-wrapped ports - ie, using port 993 for IMAPS instead of 143, where TLS is negotiated within a cleartext connection.
 
 ## License
 GPLv3
